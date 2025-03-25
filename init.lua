@@ -261,7 +261,8 @@ require('lazy').setup({
   --
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`.
-  --
+  
+
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -291,13 +292,47 @@ require('lazy').setup({
 
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' }, -- optional, for icons
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
+      require('hxh-themes').set_theme 'illumi'
+      local colors = {
+        bg = '#b5e1c6', -- deep dark
+        fg = '#2e322f', -- muted black
+        cyan = '#55bf83', -- Illumi aura
+        darkblue = '#ffec33', -- yellow
+        magenta = '#c678dd', -- for visual mode
+        green = '#a3be8c', -- for insert
+        red = '#ff5c5c', -- replace mode
+      }
+
+      local my_illumi_theme = {
+        normal = {
+          a = { fg = colors.bg, bg = colors.cyan, gui = 'bold' },
+          b = { fg = colors.fg, bg = colors.darkblue },
+          c = { fg = colors.fg, bg = colors.bg },
+        },
+        insert = {
+          a = { fg = colors.bg, bg = colors.green, gui = 'bold' },
+        },
+        visual = {
+          a = { fg = colors.bg, bg = colors.magenta, gui = 'bold' },
+        },
+        replace = {
+          a = { fg = colors.bg, bg = colors.red, gui = 'bold' },
+        },
+        inactive = {
+          a = { fg = colors.fg, bg = colors.bg },
+          b = { fg = colors.fg, bg = colors.bg },
+          c = { fg = colors.fg, bg = colors.bg },
+        },
+      }
+
       require('lualine').setup {
         options = {
-          theme = 'auto',
+          theme = my_illumi_theme,
           section_separators = { left = '', right = '' },
           component_separators = { left = '', right = '' },
+          globalstatus = true,
         },
       }
     end,
@@ -1139,6 +1174,20 @@ require('lazy').setup({
       lazy = '💤 ',
     },
   },
+})
+
+require("hxh-themes").set_theme("illumi")
+require("hxh-popups").set_popup_style("illumi")
+
+vim.api.nvim_create_user_command('HxHTheme', function(opts)
+  local theme = opts.args
+  require('hxh-themes').set_theme(theme)
+  require('hxh-popups').set_popup_style(theme)
+end, {
+  nargs = 1,
+  complete = function()
+    return { 'illumi', 'hisoka', 'kurapika' }
+  end,
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
